@@ -1,0 +1,90 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum PRCategory {
+  FEATURE
+  BUG_FIX
+  CHORE
+  OTHER
+}
+model User {
+  id            String       @id @default(cuid())
+  githubId      String       @unique
+  username      String
+  email         String?      @unique
+  avatarUrl     String?
+
+  accessToken   String?
+
+  repositories  Repository[]
+
+  createdAt     DateTime     @default(now())
+  updatedAt     DateTime     @updatedAt
+}
+
+model Repository {
+  id             String    @id @default(cuid())
+
+  githubRepoId   String    @unique
+
+  name           String
+
+  fullName       String
+
+  defaultBranch  String?
+
+  private        Boolean   @default(false)
+
+  webhookActive  Boolean   @default(false)
+
+  userId         String
+
+  user           User      @relation(fields: [userId], references: [id])
+
+  pullRequests   PullRequest[]
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
+}
+
+model PullRequest {
+  id            String      @id @default(cuid())
+
+  githubPrId    String      @unique
+
+  number        Int
+
+  title         String
+
+  body          String?
+
+  state         String
+
+  mergedAt      DateTime?
+
+  author        String?
+
+  summary       String?
+
+  confidence Float?
+
+  reasoning String?
+
+  category      PRCategory?
+
+  filesChanged  Json?
+
+  commitMessages Json?
+
+  repositoryId  String
+
+  repository    Repository @relation(fields: [repositoryId], references: [id])
+
+  createdAt     DateTime   @default(now())
+  updatedAt     DateTime   @updatedAt
+}
