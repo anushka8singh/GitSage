@@ -9,7 +9,8 @@ import repositoryRoutes from "./routes/repository.routes.js";
 import pullRequestRoutes from "./routes/pullRequest.routes.js";
 import prAnalysisRoutes
 from "./routes/prAnalysis.routes.js";
-
+import releaseRoutes
+from "./routes/release.routes.js";
 
 const app = express();
 
@@ -34,4 +35,8 @@ app.use("/api/health", healthRoutes);
 app.use("/api/users", userRoutes);
 app.use("/api/repos", repositoryRoutes);
 app.use("/api/prs", pullRequestRoutes);
+app.use(
+  "/api/releases",
+  releaseRoutes
+);
 export default app;

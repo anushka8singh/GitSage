@@ -48,6 +48,9 @@ model Repository {
   user           User      @relation(fields: [userId], references: [id])
 
   pullRequests   PullRequest[]
+
+  releases Release[]
+  
   createdAt      DateTime  @default(now())
   updatedAt      DateTime  @updatedAt
 }
@@ -87,4 +90,19 @@ model PullRequest {
 
   createdAt     DateTime   @default(now())
   updatedAt     DateTime   @updatedAt
+}
+
+model Release {
+  id          String   @id @default(cuid())
+
+  title       String
+
+  content     String
+
+  repositoryId String
+
+  repository  Repository @relation(fields: [repositoryId], references: [id])
+
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
 }
