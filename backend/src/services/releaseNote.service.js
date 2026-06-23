@@ -1,3 +1,6 @@
+import {
+  generateReleaseNarrative,
+} from "./releaseAi.service.js";
 import prisma from "../lib/prisma.js";
 
 export const generateReleaseContent =
@@ -24,7 +27,20 @@ export const generateReleaseContent =
       pullRequests.filter(
         (pr) => pr.category === "CHORE"
       );
+      const narrative =
+  await generateReleaseNarrative({
+    features: features.map(
+      (pr) => pr.summary
+    ),
 
+    bugFixes: bugFixes.map(
+      (pr) => pr.summary
+    ),
+
+    chores: chores.map(
+      (pr) => pr.summary
+    ),
+  });
     let markdown = "# Release Notes\n\n";
 
     if (features.length) {
@@ -57,5 +73,10 @@ export const generateReleaseContent =
       markdown += "\n";
     }
 
-    return markdown;
+   return {
+  overview:
+    narrative.overview,
+
+  markdown,
+};
 };

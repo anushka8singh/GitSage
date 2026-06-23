@@ -8,6 +8,52 @@ const model = genAI.getGenerativeModel({
   model: "gemini-2.5-flash",
 });
 
+
+export const generateJson =
+  async (prompt) => {
+
+    let result;
+
+    for (
+      let attempt = 1;
+      attempt <= 3;
+      attempt++
+    ) {
+      try {
+
+        result =
+          await model.generateContent(
+            prompt
+          );
+
+        break;
+
+      } catch (error) {
+
+        if (attempt === 3)
+          throw error;
+
+        await new Promise(
+          (resolve) =>
+            setTimeout(
+              resolve,
+              2000
+            )
+        );
+      }
+    }
+
+    let response =
+      result.response.text();
+
+    response = response
+      .replace(/```json/g, "")
+      .replace(/```/g, "")
+      .trim();
+
+    return JSON.parse(response);
+};
+
 export const analyzePullRequest = async (
   context
 ) => {

@@ -25,10 +25,10 @@ export const generateRelease =
         });
       }
 
-      const content =
-        await generateReleaseContent(
-          repoId
-        );
+      const releaseData =
+  await generateReleaseContent(
+    repoId
+  );
 
       const release =
         await prisma.release.create({
@@ -36,8 +36,9 @@ export const generateRelease =
             title: `Release ${new Date()
               .toISOString()
               .split("T")[0]}`,
-
-            content,
+             overview:
+            releaseData.overview,
+            content: releaseData.markdown,
 
             repositoryId: repoId,
           },
